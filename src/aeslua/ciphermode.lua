@@ -1,10 +1,11 @@
-local aes = require("aeslua.aes");
-local util = require("aeslua.util");
-local buffer = require("aeslua.buffer");
+local public = {}
 
-local public = {};
+aeslua.ciphermode = public
 
-aeslua.ciphermode = public;
+local util = aeslua.util
+local aes = aeslua.aes
+local buffer = aeslua.buffer
+
 
 --
 -- Encrypt strings
@@ -13,20 +14,20 @@ aeslua.ciphermode = public;
 -- modefunction - function for cipher mode to use
 --
 function public.encryptString(key, data, modeFunction)
-    local iv = iv or {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-    local keySched = aes.expandEncryptionKey(key);
-    local encryptedData = buffer.new();
-    
-    for i = 1, #data/16 do
-        local offset = (i-1)*16 + 1;
-        local byteData = {string.byte(data,offset,offset +15)};
+	local iv = iv or {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
+	local keySched = aes.expandEncryptionKey(key)
+	local encryptedData = buffer.new()
+	
+	for i = 1, #data/16 do
+		local offset = (i-1)*16 + 1
+		local byteData = {string.byte(data,offset,offset +15)}
 		
-        modeFunction(keySched, byteData, iv);
+		modeFunction(keySched, byteData, iv)
 
-        buffer.addString(encryptedData, string.char(unpack(byteData)));    
-    end
-    
-    return buffer.toString(encryptedData);
+		buffer.addString(encryptedData, string.char(unpack(byteData)))    
+	end
+	
+	return buffer.toString(encryptedData)
 end
 
 --
@@ -36,34 +37,34 @@ end
 
 -- Electronic code book mode encrypt function
 function public.encryptECB(keySched, byteData, iv) 
-	aes.encrypt(keySched, byteData, 1, byteData, 1);
+	aes.encrypt(keySched, byteData, 1, byteData, 1)
 end
 
 -- Cipher block chaining mode encrypt function
 function public.encryptCBC(keySched, byteData, iv) 
-    util.xorIV(byteData, iv);
+	util.xorIV(byteData, iv)
 
-    aes.encrypt(keySched, byteData, 1, byteData, 1);    
-        
-    for j = 1,16 do
-        iv[j] = byteData[j];
-    end
+	aes.encrypt(keySched, byteData, 1, byteData, 1)    
+		
+	for j = 1,16 do
+		iv[j] = byteData[j]
+	end
 end
 
 -- Output feedback mode encrypt function
 function public.encryptOFB(keySched, byteData, iv) 
-    aes.encrypt(keySched, iv, 1, iv, 1);
-    util.xorIV(byteData, iv);
+	aes.encrypt(keySched, iv, 1, iv, 1)
+	util.xorIV(byteData, iv)
 end
 
 -- Cipher feedback mode encrypt function
 function public.encryptCFB(keySched, byteData, iv) 
-    aes.encrypt(keySched, iv, 1, iv, 1);    
-    util.xorIV(byteData, iv);
-       
-    for j = 1,16 do
-        iv[j] = byteData[j];
-    end        
+	aes.encrypt(keySched, iv, 1, iv, 1)    
+	util.xorIV(byteData, iv)
+	   
+	for j = 1,16 do
+		iv[j] = byteData[j]
+	end        
 end
 
 --
@@ -73,27 +74,27 @@ end
 -- modefunction - function for cipher mode to use
 --
 function public.decryptString(key, data, modeFunction)
-    local iv = iv or {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-    
-    local keySched;
-    if (modeFunction == public.decryptOFB or modeFunction == public.decryptCFB) then
-    	keySched = aes.expandEncryptionKey(key);
-   	else
-   		keySched = aes.expandDecryptionKey(key);
-    end
-    
-    local decryptedData = buffer.new();
+	local iv = iv or {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
+	
+	local keySched
+	if (modeFunction == public.decryptOFB or modeFunction == public.decryptCFB) then
+		keySched = aes.expandEncryptionKey(key)
+	else
+		keySched = aes.expandDecryptionKey(key)
+	end
+	
+	local decryptedData = buffer.new()
 
-    for i = 1, #data/16 do
-        local offset = (i-1)*16 + 1;
-        local byteData = {string.byte(data,offset,offset +15)};
+	for i = 1, #data/16 do
+		local offset = (i-1)*16 + 1
+		local byteData = {string.byte(data,offset,offset +15)}
 
-		iv = modeFunction(keySched, byteData, iv);
+		iv = modeFunction(keySched, byteData, iv)
 
-        buffer.addString(decryptedData, string.char(unpack(byteData)));
-    end
+		buffer.addString(decryptedData, string.char(unpack(byteData)))
+	end
 
-    return buffer.toString(decryptedData);    
+	return buffer.toString(decryptedData)    
 end
 
 --
@@ -104,44 +105,44 @@ end
 -- Electronic code book mode decrypt function
 function public.decryptECB(keySched, byteData, iv) 
 
-    aes.decrypt(keySched, byteData, 1, byteData, 1);
-    
-    return iv;
+	aes.decrypt(keySched, byteData, 1, byteData, 1)
+	
+	return iv
 end
 
 -- Cipher block chaining mode decrypt function
 function public.decryptCBC(keySched, byteData, iv) 
-	local nextIV = {};
-    for j = 1,16 do
-        nextIV[j] = byteData[j];
-    end
-        
-    aes.decrypt(keySched, byteData, 1, byteData, 1);    
-    util.xorIV(byteData, iv);
+	local nextIV = {}
+	for j = 1,16 do
+		nextIV[j] = byteData[j]
+	end
+		
+	aes.decrypt(keySched, byteData, 1, byteData, 1)    
+	util.xorIV(byteData, iv)
 
-	return nextIV;
+	return nextIV
 end
 
 -- Output feedback mode decrypt function
 function public.decryptOFB(keySched, byteData, iv) 
-    aes.encrypt(keySched, iv, 1, iv, 1);
-    util.xorIV(byteData, iv);
-    
-    return iv;
+	aes.encrypt(keySched, iv, 1, iv, 1)
+	util.xorIV(byteData, iv)
+	
+	return iv
 end
 
 -- Cipher feedback mode decrypt function
 function public.decryptCFB(keySched, byteData, iv) 
-    local nextIV = {};
-    for j = 1,16 do
-        nextIV[j] = byteData[j];
-    end
+	local nextIV = {}
+	for j = 1,16 do
+		nextIV[j] = byteData[j]
+	end
 
-    aes.encrypt(keySched, iv, 1, iv, 1);
-        
-    util.xorIV(byteData, iv);
-    
-    return nextIV;
+	aes.encrypt(keySched, iv, 1, iv, 1)
+		
+	util.xorIV(byteData, iv)
+	
+	return nextIV
 end
 
-return public;
+return public

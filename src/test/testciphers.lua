@@ -1,5 +1,5 @@
-require("aeslua");
-local util = require("aeslua.util");
+shell.run("/aeslua/src/aeslua.lua")
+local util = aeslua.util
 
 math.randomseed(os.time());
 
@@ -14,6 +14,7 @@ function testCrypto(password, data)
             plain = aeslua.decrypt(password, cipher, keyLength, mode);
             print("Mode: ", mode, " keyLength: ", keyLength, " Plain: ", plain);
             print("--");
+            coroutine.yield()
         end
     end
 end 

@@ -4,20 +4,24 @@
 -- Do not use for real decryption, because the password is easily viewable 
 -- while decrypting.
 --
-require("aeslua");
+shell.run("/aeslua/src/aeslua.lua")
+local arg={...}
 
-if (#arg ~= 2) then
-	print("Usage: filedecrypt.lua [file] [password] > decryptedfile\n");
-	print("Do not use for real decryption, because the password is easily viewable while decrypting.");
-	return 1;
+if (#arg ~= 3) then
+	print("Usage: filedecrypt.lua [file] [password] [decryptedfile]\n")
+	print("Do not use for real decryption, because the password is easily viewable while decrypting.")
+	return 1
 end
 
-local file = assert(io.open(arg[1], "r"));
-local cipher = file:read("*all");
-local plain = aeslua.decrypt(arg[2], cipher);
+local file = fs.open(arg[1], "r")
+local cipher = file.readAll()
+local plain = aeslua.decrypt(arg[2], cipher)
 if (plain == nil) then
-	print("Invalid password.");
+	print("Invalid password.")
 else
-	io.write(plain);
+	local out = file.open(arg[3],"w")
+	out.write(cipher)
+	out.close()
+	print(cipher)
 end
-file:close();
+file.close()
