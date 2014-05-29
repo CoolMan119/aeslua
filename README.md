@@ -1,8 +1,7 @@
-AES for lua
------------
+AES for Lua
+===========
 
-This files contain an implementation of AES in lua. The only additional library 
-needed is bitlib.
+This files contain an implementation of AES in ComputerCraft (http://www.computercraft.info/) Lua.
 
 Usage
 -----
@@ -11,7 +10,7 @@ aeslua.lua contains a simple API to encrypt and decrypt lua strings.
 
 To encrypt the string "geheim" with the password "password" use:
 
-require("aeslua");
+os.loadAPI("aeslua");
 cipher = aeslua.encrypt("password", "secret");
 
 and to decrypt the string again:
@@ -24,12 +23,6 @@ look into the file src/testcryptotest.lua.
 To use AES directly, have a look at aes.lua and at the example usage in 
 testaes.lua.
 
-Installation
-------------
-
-Edit the LIBDIR variable in the Makefile and run
-
-make install
 
 Speed
 -----
@@ -44,5 +37,3 @@ them to long values for each bit operation.
 So if you need to encrypt much data with AES, do yourself a favor and use a 
 C-Implementation. But if you only need to encrypt short strings and you have 
 no control over the lua environment (like in games :-)) use this library.
-
-Matthias Hilbig <mhilbig@gmail.com>
