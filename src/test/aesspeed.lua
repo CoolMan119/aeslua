@@ -14,7 +14,7 @@ end
 function AESspeed()
     key = getRandomBits(128)
     plaintext = getRandomBits(128)
-    local n = 10000
+    local n = 1000
 
     start = os.clock()
     keySched = aes.expandEncryptionKey(key)
