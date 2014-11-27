@@ -1,4 +1,5 @@
-shell.run("/aeslua/src/aeslua.lua")
+os.unloadAPI("aeslua"); os.loadAPI(shell.resolve("../aeslua"))
+
 local util = aeslua.util
 
 math.randomseed(os.time());
@@ -14,7 +15,10 @@ function testCrypto(password, data)
             plain = aeslua.decrypt(password, cipher, keyLength, mode);
             print("Mode: ", mode, " keyLength: ", keyLength, " Plain: ", plain);
             print("--");
-            coroutine.yield()
+            
+            -- TODO: 'Checkin function like GrinGet'
+            os.queueEvent("test")
+            os.pullEvent("test")
         end
     end
 end 

@@ -1,12 +1,10 @@
-local public = {}
+--@name buffer
 
-aeslua.buffer = public
-
-function public.new ()
+local function new ()
 	return {}
 end
 
-function public.addString (stack, s)
+local function addString (stack, s)
 	table.insert(stack, s)
 	for i = #stack - 1, 1, -1 do
 		if #stack[i] > #stack[i+1] then 
@@ -16,11 +14,15 @@ function public.addString (stack, s)
 	end
 end
 
-function public.toString (stack)
+local function toString (stack)
 	for i = #stack - 1, 1, -1 do
 		stack[i] = stack[i] .. table.remove(stack)
 	end
 	return stack[1]
 end
 
-return public
+return {
+	new = new,
+	addString = addString,
+	toString = toString,
+}

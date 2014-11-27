@@ -1,4 +1,4 @@
-shell.run("/aeslua/src/aeslua.lua")
+os.unloadAPI("aeslua"); os.loadAPI(shell.resolve("../aeslua"))
 local aes = aeslua.aes
 local util = aeslua.util
 
@@ -175,8 +175,8 @@ end
 
 --testKeyExpansion()
 --testEncrypt()
-print("Testing 1000 random en-/decryptions...")
-if (testnAES(1000)) then
+print("Testing 10 random en-/decryptions...")
+if (testnAES(10)) then
 	print("ok.")
 end
 

@@ -4,7 +4,7 @@
 -- Do not use for real decryption, because the password is easily viewable 
 -- while decrypting.
 --
-shell.run("/aeslua/src/aeslua.lua")
+os.unloadAPI("aeslua"); os.loadAPI(shell.resolve("../aeslua"))
 local arg={...}
 
 if (#arg ~= 3) then

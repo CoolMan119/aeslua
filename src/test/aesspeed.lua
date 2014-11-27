@@ -1,4 +1,4 @@
-shell.run("/aeslua/src/aeslua.lua")
+os.unloadAPI("aeslua"); os.loadAPI(shell.resolve("../aeslua"))
 local aes = aeslua.aes
 
 function getRandomBits(bits)
