@@ -1,3 +1,11 @@
+local options = {
+	traceback = false
+}
+
+-- Load in aeslua, prefered to using os.loadAPI
+local aeslua = setmetatable({}, { __index = getfenv() })
+setfenv(loadfile(shell.resolve("../aeslua")), aeslua)()
+
 local function pcallFile(file)
 	local code = loadfile(file)
 
@@ -5,9 +13,26 @@ local function pcallFile(file)
 		return false, "Does not exist"
 	end
 
-	setfenv(code, getfenv())
+	local env = setmetatable({ aeslua = aeslua }, { __index = getfenv() })
+	setfenv(code, env)
 
-	return pcall(code)
+	local success = true
+	local messages = ""
+	xpcall(code, function(message)
+		success = false
+		messages = message
+
+		if options.traceback then
+			for i =4, 15, 1 do
+				local s, err = pcall(function() error("", i) end)
+
+				if err:match("xpcall") then break end
+				messages = messages .. "\n    Trace: ".. err
+			end
+		end
+	end)
+
+	return success, messages
 end
 
 
@@ -60,5 +85,21 @@ local tests = {
 	"testaes.lua",
 	"testciphers.lua"
 }
+
+local args = {...}
+if #args > 0 then
+	local customTests = {}
+	for _, arg in ipairs(args) do
+		if arg == "-t" then
+			options.traceback = true
+		else
+			table.insert(customTests, arg)
+		end
+	end
+
+	if #customTests > 0 then
+		tests = customTests
+	end
+end
 
 formatResults(runTests(tests))

@@ -1,10 +1,8 @@
-os.unloadAPI("aeslua"); os.loadAPI(shell.resolve("../aeslua"))
-
 local util = aeslua.util
 
 math.randomseed(os.time());
 
-function testCrypto(password, data)
+local function testCrypto(password, data)
     local modes ={aeslua.ECBMODE, aeslua.CBCMODE, aeslua.OFBMODE, aeslua.CFBMODE};
     local keyLengths =  {aeslua.AES128, aeslua.AES192, aeslua.AES256};  
     for i, mode in ipairs(modes) do
