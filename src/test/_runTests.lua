@@ -45,8 +45,7 @@ local function runTests(tests)
 		local stat, err = pcallFile(fs.combine(dir, file))
 		results[file] = {stat, err}
 
-		os.queueEvent("test")
-		os.pullEvent("test")
+		sleep(0)
 	end
 
 	return results

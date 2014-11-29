@@ -6,6 +6,8 @@ local bxor = bit.bxor
 local rshift = bit.rshift
 local band = bit.band
 local lshift = bit.lshift
+
+local sleepCheckIn
 --
 -- calculate the parity of one byte
 --
@@ -49,6 +51,8 @@ local function bytesToInts(bytes, start, n)
 				+ putByte(bytes[start + (i*4) + 1], 2) 
 				+ putByte(bytes[start + (i*4) + 2], 1)    
 				+ putByte(bytes[start + (i*4) + 3], 0)
+
+		if n % 10000 == 0 then sleepCheckIn() end
 	end
 	return ints
 end
@@ -62,6 +66,8 @@ local function intsToBytes(ints, output, outputOffset, n)
 		for j = 0,3 do
 			output[outputOffset + i*4 + (3 - j)] = getByte(ints[i], j)
 		end
+
+		if n % 10000 == 0 then sleepCheckIn() end
 	end
 	return output
 end
@@ -152,6 +158,16 @@ local function xorIV(data, iv)
 	end 
 end
 
+-- Called every
+local oldTime = os.time()
+local function sleepCheckIn()
+    local newTime = os.time()
+    if newTime - oldTime >= 0.03 then -- (0.020 * 1.5)
+        oldTime = newTime
+        sleep(0)
+    end
+end
+
 return {
 	byteParity = byteParity,
 	getByte = getByte,
@@ -164,4 +180,6 @@ return {
 	properlyDecrypted = properlyDecrypted,
 	unpadByteString = unpadByteString,
 	xorIV = xorIV,
+
+	sleepCheckIn = sleepCheckIn,
 }

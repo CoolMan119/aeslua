@@ -1,3 +1,8 @@
+--[[
+    Performance checker for AES,
+    Encrypts data 1000 times
+]]
+
 local aes = aeslua.aes
 
 local function getRandomBits(bits)

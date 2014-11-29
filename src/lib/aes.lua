@@ -429,6 +429,8 @@ local function encrypt(key, input, inputOffset, output, outputOffset)
 	state = util.bytesToInts(input, inputOffset, 4)
 	addRoundKey(state, key, 0)
 
+	local checkIn = util.sleepCheckIn
+
 	local round = 1
 	while (round < key[ROUNDS] - 1) do
 		-- do a double round to save temporary assignments
@@ -439,6 +441,10 @@ local function encrypt(key, input, inputOffset, output, outputOffset)
 		doRound(tmpState, state)
 		addRoundKey(state, key, round)
 		round = round + 1
+
+		if round % 5 == 0 then
+			checkIn()
+		end
 	end
 	
 	doRound(state, tmpState)
@@ -476,6 +482,8 @@ local function decrypt(key, input, inputOffset, output, outputOffset)
 	state = util.bytesToInts(input, inputOffset, 4)
 	addRoundKey(state, key, key[ROUNDS])
 
+	local checkIn = util.sleepCheckIn
+
 	local round = key[ROUNDS] - 1
 	while (round > 2) do
 		-- do a double round to save temporary assignments
@@ -486,6 +494,10 @@ local function decrypt(key, input, inputOffset, output, outputOffset)
 		doInvRound(tmpState, state)
 		addRoundKey(state, key, round)
 		round = round - 1
+
+		if round % 5 == 0 then
+			checkIn()
+		end
 	end
 	
 	doInvRound(state, tmpState)
