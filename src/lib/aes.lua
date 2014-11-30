@@ -442,10 +442,12 @@ local function encrypt(key, input, inputOffset, output, outputOffset)
 		addRoundKey(state, key, round)
 		round = round + 1
 
-		if round % 5 == 0 then
+		if round % 32 == 0 then
 			checkIn()
 		end
 	end
+
+	checkIn()
 	
 	doRound(state, tmpState)
 	addRoundKey(tmpState, key, round)
@@ -495,10 +497,12 @@ local function decrypt(key, input, inputOffset, output, outputOffset)
 		addRoundKey(state, key, round)
 		round = round - 1
 
-		if round % 5 == 0 then
+		if round % 32 == 0 then
 			checkIn()
 		end
 	end
+
+	checkIn()
 	
 	doInvRound(state, tmpState)
 	addRoundKey(tmpState, key, round)

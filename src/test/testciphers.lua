@@ -5,8 +5,6 @@ math.randomseed(os.time());
 local function testCrypto(password, data)
     local modes ={aeslua.ECBMODE, aeslua.CBCMODE, aeslua.OFBMODE, aeslua.CFBMODE};
     local keyLengths =  {aeslua.AES128, aeslua.AES192, aeslua.AES256};  
-
-    util.sleepReset()
     
     for i, mode in ipairs(modes) do
         for j, keyLength in ipairs(keyLengths) do
