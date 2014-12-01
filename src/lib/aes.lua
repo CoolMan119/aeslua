@@ -441,10 +441,6 @@ local function encrypt(key, input, inputOffset, output, outputOffset)
 		doRound(tmpState, state)
 		addRoundKey(state, key, round)
 		round = round + 1
-
-		if round % 32 == 0 then
-			checkIn()
-		end
 	end
 
 	checkIn()
