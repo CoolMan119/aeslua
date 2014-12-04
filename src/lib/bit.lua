@@ -1,4 +1,8 @@
---[[ MIT License ]]--
+--[[
+  (c) 2008-2011 David Manura. Licensed under the same terms as Lua (MIT)
+  https://github.com/davidm/lua-bit-numberlua
+]]
+--@name bit
 local floor = math.floor
 local MOD = 2^32
 local MODM = MOD-1
