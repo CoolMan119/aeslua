@@ -1,11 +1,9 @@
+--@name ciphermode
+--@require util.lua
+--@require aes.lua
+--@require buffer.lua
+
 local public = {}
-
-aeslua.ciphermode = public
-
-local util = aeslua.util
-local aes = aeslua.aes
-local buffer = aeslua.buffer
-
 
 --
 -- Encrypt strings

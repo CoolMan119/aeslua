@@ -1,35 +1,20 @@
-local private = {}
-local public = {}
-aeslua = public
-
-local path = fs.combine(fs.getDir(shell.getRunningProgram()),"aeslua")
-local env = {['aeslua'] = aeslua}
-
-os.run(env, fs.combine(path, "bit.lua"))
-os.run(env, fs.combine(path, "buffer.lua"))
-os.run(env, fs.combine(path, "gf.lua"))
-os.run(env, fs.combine(path, "util.lua"))
-os.run(env, fs.combine(path, "aes.lua"))
-os.run(env, fs.combine(path, "ciphermode.lua"))
-
-local ciphermode = aeslua.ciphermode
-local util = aeslua.util
+--@require lib/ciphermode.lua
+--@require lib/util.lua
 --
 -- Simple API for encrypting strings.
 --
+AES128 = 16
+AES192 = 24
+AES256 = 32
 
-public.AES128 = 16
-public.AES192 = 24
-public.AES256 = 32
+ECBMODE = 1
+CBCMODE = 2
+OFBMODE = 3
+CFBMODE = 4
 
-public.ECBMODE = 1
-public.CBCMODE = 2
-public.OFBMODE = 3
-public.CFBMODE = 4
-
-function private.pwToKey(password, keyLength)
+local function pwToKey(password, keyLength)
 	local padLength = keyLength
-	if (keyLength == public.AES192) then
+	if (keyLength == AES192) then
 		padLength = 32
 	end
 	
@@ -60,24 +45,24 @@ end
 --
 -- mode and keyLength must be the same for encryption and decryption.
 --
-function public.encrypt(password, data, keyLength, mode)
+function encrypt(password, data, keyLength, mode)
 	assert(password ~= nil, "Empty password.")
 	assert(password ~= nil, "Empty data.")
 	 
-	local mode = mode or public.CBCMODE
-	local keyLength = keyLength or public.AES128
+	local mode = mode or CBCMODE
+	local keyLength = keyLength or AES128
 
-	local key = private.pwToKey(password, keyLength)
+	local key = pwToKey(password, keyLength)
 
 	local paddedData = util.padByteString(data)
 	
-	if (mode == public.ECBMODE) then
+	if (mode == ECBMODE) then
 		return ciphermode.encryptString(key, paddedData, ciphermode.encryptECB)
-	elseif (mode == public.CBCMODE) then
+	elseif (mode == CBCMODE) then
 		return ciphermode.encryptString(key, paddedData, ciphermode.encryptCBC)
-	elseif (mode == public.OFBMODE) then
+	elseif (mode == OFBMODE) then
 		return ciphermode.encryptString(key, paddedData, ciphermode.encryptOFB)
-	elseif (mode == public.CFBMODE) then
+	elseif (mode == CFBMODE) then
 		return ciphermode.encryptString(key, paddedData, ciphermode.encryptCFB)
 	else
 		return nil
@@ -96,20 +81,20 @@ end
 --
 -- mode and keyLength must be the same for encryption and decryption.
 --
-function public.decrypt(password, data, keyLength, mode)
-	local mode = mode or public.CBCMODE
-	local keyLength = keyLength or public.AES128
+function decrypt(password, data, keyLength, mode)
+	local mode = mode or CBCMODE
+	local keyLength = keyLength or AES128
 
-	local key = private.pwToKey(password, keyLength)
+	local key = pwToKey(password, keyLength)
 	
 	local plain
-	if (mode == public.ECBMODE) then
+	if (mode == ECBMODE) then
 		plain = ciphermode.decryptString(key, data, ciphermode.decryptECB)
-	elseif (mode == public.CBCMODE) then
+	elseif (mode == CBCMODE) then
 		plain = ciphermode.decryptString(key, data, ciphermode.decryptCBC)
-	elseif (mode == public.OFBMODE) then
+	elseif (mode == OFBMODE) then
 		plain = ciphermode.decryptString(key, data, ciphermode.decryptOFB)
-	elseif (mode == public.CFBMODE) then
+	elseif (mode == CFBMODE) then
 		plain = ciphermode.decryptString(key, data, ciphermode.decryptCFB)
 	end
 	

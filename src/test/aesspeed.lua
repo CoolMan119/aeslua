@@ -1,7 +1,11 @@
-shell.run("/aeslua/src/aeslua.lua")
+--[[
+    Performance checker for AES,
+    Encrypts data 1000 times
+]]
+
 local aes = aeslua.aes
 
-function getRandomBits(bits)
+local function getRandomBits(bits)
     local result = {}
 
     for i=1,bits/8 do
@@ -11,10 +15,10 @@ function getRandomBits(bits)
     return result
 end
 
-function AESspeed()
+local function AESspeed()
     key = getRandomBits(128)
     plaintext = getRandomBits(128)
-    local n = 10000
+    local n = 1000
 
     start = os.clock()
     keySched = aes.expandEncryptionKey(key)
