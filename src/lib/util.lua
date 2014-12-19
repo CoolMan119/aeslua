@@ -15,7 +15,7 @@ local function byteParity(byte)
 	return band(byte, 1)
 end
 
--- 
+--
 -- get byte at position index
 --
 local function getByte(number, index)
@@ -45,8 +45,8 @@ local function bytesToInts(bytes, start, n)
 	local ints = {}
 	for i = 0, n - 1 do
 		ints[i] = putByte(bytes[start + (i*4)    ], 3)
-				+ putByte(bytes[start + (i*4) + 1], 2) 
-				+ putByte(bytes[start + (i*4) + 2], 1)    
+				+ putByte(bytes[start + (i*4) + 1], 2)
+				+ putByte(bytes[start + (i*4) + 2], 1)
 				+ putByte(bytes[start + (i*4) + 3], 0)
 
 		if n % 10000 == 0 then sleepCheckIn() end
@@ -74,8 +74,8 @@ end
 --
 local function bytesToHex(bytes)
 	local hexBytes = ""
-	
-	for i,byte in ipairs(bytes) do 
+
+	for i,byte in ipairs(bytes) do
 		hexBytes = hexBytes .. string.format("%02x ", byte)
 	end
 
@@ -92,7 +92,7 @@ local function toHexString(data)
 	elseif (type == "table") then
 		return bytesToHex(data)
 	elseif (type == "string") then
-		local bytes = {string.byte(data, 1, #data)} 
+		local bytes = {string.byte(data, 1, #data)}
 
 		return bytesToHex(bytes)
 	else
@@ -102,7 +102,7 @@ end
 
 local function padByteString(data)
 	local dataLength = #data
-	
+
 	local random1 = math.random(0,255)
 	local random2 = math.random(0,255)
 
@@ -121,7 +121,7 @@ local function padByteString(data)
 	local padding = ""
 	for i=1,paddingLength do
 		padding = padding .. string.char(math.random(0,255))
-	end 
+	end
 
 	return data .. padding
 end
@@ -132,7 +132,7 @@ local function properlyDecrypted(data)
 	if (random[1] == random[3] and random[2] == random[4]) then
 		return true
 	end
-	
+
 	return false
 end
 
@@ -142,17 +142,17 @@ local function unpadByteString(data)
 	end
 
 	local dataLength = putByte(string.byte(data,5), 3)
-					 + putByte(string.byte(data,6), 2) 
-					 + putByte(string.byte(data,7), 1)    
+					 + putByte(string.byte(data,6), 2)
+					 + putByte(string.byte(data,7), 1)
 					 + putByte(string.byte(data,8), 0)
-	
+
 	return string.sub(data,9,8+dataLength)
 end
 
 local function xorIV(data, iv)
 	for i = 1,16 do
 		data[i] = bxor(data[i], iv[i])
-	end 
+	end
 end
 
 -- Called every

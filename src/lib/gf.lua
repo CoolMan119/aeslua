@@ -12,14 +12,14 @@ local log = {}
 --
 -- add two polynoms (its simply xor)
 --
-local function add(operand1, operand2) 
+local function add(operand1, operand2)
 	return bxor(operand1,operand2)
 end
 
--- 
+--
 -- subtract two polynoms (same as addition)
 --
-local function sub(operand1, operand2) 
+local function sub(operand1, operand2)
 	return bxor(operand1,operand2)
 end
 
@@ -28,7 +28,7 @@ end
 -- a^(-1) = g^(order - log(a))
 --
 local function invert(operand)
-	-- special case for 1 
+	-- special case for 1
 	if (operand == 1) then
 		return 1
 	end
@@ -45,7 +45,7 @@ local function mul(operand1, operand2)
 	if (operand1 == 0 or operand2 == 0) then
 		return 0
 	end
-	
+
 	local exponent = log[operand1] + log[operand2]
 	if (exponent >= ord) then
 		exponent = exponent - ord
@@ -97,7 +97,7 @@ local function initMulTable()
 		exp[i] = a
 		log[a] = i
 
-		-- multiply with generator x+1 -> left shift + 1	
+		-- multiply with generator x+1 -> left shift + 1
 		a = bxor(lshift(a, 1), a)
 
 		-- if a gets larger than order, reduce modulo irreducible polynom
