@@ -1,11 +1,13 @@
 local aes = aeslua.aes
 local util = aeslua.util
 
+--local function print(...) end -- Quiet
+
 --test vectors
 
-local aesplain1 = {0x32, 0x43, 0xf6, 0xa8, 
-			 0x88, 0x5a, 0x30, 0x8d, 
-			 0x31, 0x31, 0x98, 0xa2, 
+local aesplain1 = {0x32, 0x43, 0xf6, 0xa8,
+			 0x88, 0x5a, 0x30, 0x8d,
+			 0x31, 0x31, 0x98, 0xa2,
 			 0xe0, 0x37, 0x07, 0x34}
 local aesplain2 = {0x00, 0x11, 0x22, 0x33,
 			 0x44, 0x55, 0x66, 0x77,
@@ -49,7 +51,7 @@ local aes256key2 = {0x00, 0x01, 0x02, 0x03,
 				0x1c, 0x1d, 0x1e, 0x1f}
 
 
-local function printSBox() 
+local function printSBox()
 	print("sbox")
 	for i=0,255 do
 		print(string.format("%x: %x", i, aes.SBox[i]))
@@ -62,7 +64,7 @@ local function printSBox()
 end
 
 local function testRound()
-	state = {0x19, 0x3d, 0xe3,0xbe, 
+	state = {0x19, 0x3d, 0xe3,0xbe,
 			0xa0, 0xf4, 0xe2, 0x2b,
 			0x9a, 0xc6, 0x8d, 0x2a,
 			0xe9, 0xf8, 0x48, 0x08}
@@ -93,18 +95,18 @@ end
 
 local function testKeyExpansion()
 	printKeyExpansion(aes128key1)
-	
+
 	printKeyExpansion(aes192key1)
-	
+
 	printKeyExpansion(aes256key1)
 end
 
 local function AESEncrypt(key, plain)
-	keySched = aes.expandEncryptionKey(key) 
-	cipher = aes.encrypt(keySched, plain) 
+	keySched = aes.expandEncryptionKey(key)
+	cipher = aes.encrypt(keySched, plain)
 	keySched = aes.expandDecryptionKey(key)
 	decrypted = aes.decrypt(keySched,cipher)
-	
+
 	return {key, plain, cipher, decrypted}
 end
 
@@ -116,7 +118,7 @@ local function printResult(result)
 	print("Ciphertext:")
 	print(util.toHexString(result[3]))
 	print("Decrypted:")
-	print(util.toHexString(result[4])) 
+	print(util.toHexString(result[4]))
 end
 
 function testResult(result)
@@ -128,17 +130,17 @@ function testResult(result)
 			return false
 		end
 	end
-	
+
 	return true
 end
 
 local function testEncrypt()
 	local result1 = AESEncrypt(aes128key2, aesplain2)
 	printResult(result1)
-	 
+
 	result1 = AESEncrypt(aes192key2, aesplain2)
 	printResult(result1)
-	
+
 	result1 = AESEncrypt(aes256key2, aesplain2)
 	printResult(result1)
 end
@@ -150,13 +152,13 @@ local function getRandomBits(bits)
 	for i=1,bits/8 do
 		result[i] = math.random(0,255)
 	end
-	
+
 	return result
 end
 
 local function testnAES(n)
 	math.randomseed(os.time())
-	
+
 	for x=1,n do
 		key = getRandomBits(128)
 		plaintext = getRandomBits(128)
@@ -168,7 +170,7 @@ local function testnAES(n)
 			return false
 		end
 	end
-	
+
 	return true
 end
 

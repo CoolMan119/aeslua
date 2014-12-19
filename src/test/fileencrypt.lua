@@ -1,7 +1,7 @@
 -- Usage: fileencrypt.lua [file] [password] > encryptedfile
 --
 -- Encrypts everything from [file] and writes encrypted data to stdout.
--- Do not use for real encryption, because the password is easily viewable 
+-- Do not use for real encryption, because the password is easily viewable
 -- while encrypting.
 --
 os.unloadAPI("aeslua"); os.loadAPI(shell.resolve("../aeslua"))

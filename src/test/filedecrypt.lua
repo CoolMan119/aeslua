@@ -1,7 +1,7 @@
 -- Usage: filedecrypt.lua [file] [password] > decryptedfile
 --
 -- Decrypts everything from [file] and writes decrypted data to stdout.
--- Do not use for real decryption, because the password is easily viewable 
+-- Do not use for real decryption, because the password is easily viewable
 -- while decrypting.
 --
 os.unloadAPI("aeslua"); os.loadAPI(shell.resolve("../aeslua"))

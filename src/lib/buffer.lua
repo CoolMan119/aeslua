@@ -1,5 +1,3 @@
---@name buffer
-
 local function new ()
 	return {}
 end

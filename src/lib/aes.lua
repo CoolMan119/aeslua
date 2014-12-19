@@ -1,12 +1,5 @@
---
 -- Implementation of AES with nearly pure lua
---
 -- AES with lua is slow, really slow :-)
---
---@name aes
---@require util.lua
---@require gf.lua
---@require bit.lua
 
 local putByte = util.putByte
 local getByte = util.getByte

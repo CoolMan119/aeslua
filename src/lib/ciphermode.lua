@@ -1,8 +1,3 @@
---@name ciphermode
---@require util.lua
---@require aes.lua
---@require buffer.lua
-
 local public = {}
 
 --

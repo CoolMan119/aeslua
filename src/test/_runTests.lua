@@ -2,9 +2,10 @@ local options = {
 	traceback = false
 }
 
--- Load in aeslua, prefered to using os.loadAPI
 local aeslua = setmetatable({}, { __index = getfenv() })
-setfenv(loadfile(shell.resolve("../aeslua")), aeslua)()
+setfenv(loadfile("build/aeslua.lua"), aeslua)()
+
+-- Load in aeslua, prefered to using os.loadAPI
 
 local function pcallFile(file)
 	local code = loadfile(file)
@@ -37,7 +38,7 @@ end
 
 
 local function runTests(tests)
-	local dir = fs.getDir(shell.getRunningProgram())
+	local dir = 'src/test'
 	local results = {}
 
 	for _, file in ipairs(tests) do
@@ -77,6 +78,8 @@ local function formatResults(results)
 	term.setTextColor(colors.white)
 
 	print(string.format("Ran %s tests, %s failed", total, fails))
+
+	return fails
 end
 
 local tests = {
@@ -101,4 +104,6 @@ if #args > 0 then
 	end
 end
 
-formatResults(runTests(tests))
+local fails = formatResults(runTests(tests))
+
+return fails == 0

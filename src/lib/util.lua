@@ -1,6 +1,3 @@
---@name util
---@require bit.lua
-
 -- Cache some bit operators
 local bxor = bit.bxor
 local rshift = bit.rshift

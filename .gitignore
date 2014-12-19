@@ -1,1 +1,4 @@
 src/aeslua
+build/
+*.tsv
+*.min
