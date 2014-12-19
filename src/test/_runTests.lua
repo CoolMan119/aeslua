@@ -8,7 +8,7 @@ setfenv(loadfile("build/aeslua.lua"), aeslua)()
 -- Load in aeslua, prefered to using os.loadAPI
 
 local function pcallFile(file)
-	local code = loadfile(file)
+	local code = loadfile(file .. ".lua")
 
 	if not code then
 		return false, "Does not exist"
@@ -42,7 +42,9 @@ local function runTests(tests)
 	local results = {}
 
 	for _, file in ipairs(tests) do
+		if term.isColor() then term.setTextColor(colors.magenta) end
 		print("==" .. file .. "==")
+		if term.isColor() then term.setTextColor(colors.white) end
 		local stat, err = pcallFile(fs.combine(dir, file))
 		results[file] = {stat, err}
 
@@ -83,9 +85,9 @@ local function formatResults(results)
 end
 
 local tests = {
-	"aesspeed.lua",
-	"testaes.lua",
-	"testciphers.lua"
+	"aesspeed",
+	"testaes",
+	"testciphers",
 }
 
 local args = {...}

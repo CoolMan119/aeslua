@@ -1,6 +1,9 @@
 local util = aeslua.util
 
-math.randomseed(os.time());
+local function printQuiet(...) end
+if Verbose then printQuiet = Verbose end -- Use verbose from Howl
+
+math.randomseed(os.time())
 
 local function testCrypto(password, data)
     local modes ={aeslua.ECBMODE, aeslua.CBCMODE, aeslua.OFBMODE, aeslua.CFBMODE};
@@ -8,12 +11,12 @@ local function testCrypto(password, data)
 
     for i, mode in ipairs(modes) do
         for j, keyLength in ipairs(keyLengths) do
-            print("--");
+            printQuiet("--");
             cipher = aeslua.encrypt(password, data, keyLength, mode);
-            print("Cipher: ", util.toHexString(cipher));
+            printQuiet("Cipher: ", util.toHexString(cipher));
             plain = aeslua.decrypt(password, cipher, keyLength, mode);
-            print("Mode: ", mode, " keyLength: ", keyLength, " Plain: ", plain);
-            print("--");
+            printQuiet("Mode: ", mode, " keyLength: ", keyLength, " Plain: ", plain);
+            printQuiet("--");
 
             util.sleepCheckIn()
         end

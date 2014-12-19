@@ -1,7 +1,8 @@
 local aes = aeslua.aes
 local util = aeslua.util
 
---local function print(...) end -- Quiet
+local function printQuiet(...) end
+if Verbose then printQuiet = Verbose end -- Use verbose from Howl
 
 --test vectors
 
@@ -51,45 +52,18 @@ local aes256key2 = {0x00, 0x01, 0x02, 0x03,
 				0x1c, 0x1d, 0x1e, 0x1f}
 
 
-local function printSBox()
-	print("sbox")
-	for i=0,255 do
-		print(string.format("%x: %x", i, aes.SBox[i]))
-	end
-
-	print("inverse sbox")
-	for i=0,255 do
-		print(string.format("%x: %x", i, aes.iSBox[i]))
-	end
-end
-
-local function testRound()
-	state = {0x19, 0x3d, 0xe3,0xbe,
-			0xa0, 0xf4, 0xe2, 0x2b,
-			0x9a, 0xc6, 0x8d, 0x2a,
-			0xe9, 0xf8, 0x48, 0x08}
-
-	printState(state)
-	aes.subBytes(state)
-	printState(state)
-	aes.shiftRows(state)
-	printState(state)
-	aes.mixColumn(state)
-	printState(state)
-end
-
 
 local function printKeyExpansion(key)
 	keySchedule = aes.expandEncryptionKey(key)
-	print("ENCRYPT")
+	printQuiet("ENCRYPT")
 	for i=0,#keySchedule do
-		 print(string.format("%d[%d]= %x",keySchedule[aes.ROUNDS],i,keySchedule[i]))
+		 printQuiet(string.format("%d[%d]= %x",keySchedule[aes.ROUNDS],i,keySchedule[i]))
 	end
 
 	keySchedule = aes.expandDecryptionKey(key)
-	print("DECRYPT")
+	printQuiet("DECRYPT")
 	for i=0,#keySchedule do
-		print(string.format("%d[%d]= %x",keySchedule[aes.ROUNDS],i,keySchedule[i]))
+		printQuiet(string.format("%d[%d]= %x",keySchedule[aes.ROUNDS],i,keySchedule[i]))
 	end
 end
 
@@ -110,15 +84,16 @@ local function AESEncrypt(key, plain)
 	return {key, plain, cipher, decrypted}
 end
 
-local function printResult(result)
-	print("Key:")
-	print(util.toHexString(result[1]))
-	print("Plaintext:")
-	print(util.toHexString(result[2]))
-	print("Ciphertext:")
-	print(util.toHexString(result[3]))
-	print("Decrypted:")
-	print(util.toHexString(result[4]))
+local function printResult(result, p)
+	p = p or printQuiet
+	p("Key:")
+	p(util.toHexString(result[1]))
+	p("Plaintext:")
+	p(util.toHexString(result[2]))
+	p("Ciphertext:")
+	p(util.toHexString(result[3]))
+	p("Decrypted:")
+	p(util.toHexString(result[4]))
 end
 
 function testResult(result)
@@ -165,20 +140,15 @@ local function testnAES(n)
 
 		local result = AESEncrypt(key, plaintext)
 		if (not testResult(result)) then
-			print("ENCRYPTION/DECRYPTION ERROR:")
-			printResult(result)
-			return false
+			printError("ENCRYPTION/DECRYPTION ERROR:")
+			printResult(result, print)
+			error("Error encypting/decrypting: Do not match")
 		end
 	end
-
-	return true
 end
 
 --testKeyExpansion()
 --testEncrypt()
 print("Testing 10 random en-/decryptions...")
-if (testnAES(10)) then
-	print("ok.")
-end
-
+testnAES(10)
 

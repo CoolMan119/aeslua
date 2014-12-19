@@ -41,9 +41,8 @@ Tasks:Task "test"(function()
 	local arguments = {}
 
 	if tests then
-		for test in string.gmatch(tests, "[^,;]+") do
+		for test in tests:gmatch("[^,;]+") do
 			table.insert(arguments, test)
-			print(test)
 		end
 	end
 
