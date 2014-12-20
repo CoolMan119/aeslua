@@ -3,13 +3,14 @@
 ]]
 
 local function getRandomString(bits)
+	local char, random, sleep = string.char, math.random, aeslua.util.sleepCheckIn
 	local result = ""
 
 	for i=1,bits do
-		result = result .. string.char(math.random(0,255))
+		result = result .. char(random(0,255))
 
 		if i % 10240 == 0 then
-			aeslua.util.sleepCheckIn()
+			sleep()
 		end
 	end
 
@@ -17,9 +18,13 @@ local function getRandomString(bits)
 end
 
 local function AesLarge()
+	print("Generating string")
+
 	local key = getRandomString(128)
-	local n = 50
+	local n = 150
 	local plaintext = getRandomString(n * 1024)
+
+	print("Generated string")
 
 	local start = os.clock()
 	aeslua.encrypt(key,plaintext)
