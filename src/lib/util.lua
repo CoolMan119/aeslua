@@ -156,12 +156,14 @@ local function xorIV(data, iv)
 end
 
 -- Called every
-local oldTime = os.time()
+local push, pull, time = os.queueEvent, coroutine.yield, os.time
+local oldTime = time()
 local function sleepCheckIn()
-    local newTime = os.time()
+    local newTime = time()
     if newTime - oldTime >= 0.03 then -- (0.020 * 1.5)
         oldTime = newTime
-        sleep(0)
+        push("sleep")
+        pull("sleep")
     end
 end
 
