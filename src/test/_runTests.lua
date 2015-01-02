@@ -3,12 +3,12 @@ local options = {
 }
 
 local aeslua = setmetatable({}, { __index = getfenv() })
-setfenv(loadfile("build/aeslua.lua"), aeslua)()
+setfenv(loadfile(File "build/aeslua.lua"), aeslua)()
 
 -- Load in aeslua, prefered to using os.loadAPI
 
 local function pcallFile(file)
-	local code = loadfile(file .. ".lua")
+	local code = loadfile(File(file .. ".lua"))
 
 	if not code then
 		return false, "Does not exist"

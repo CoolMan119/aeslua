@@ -1,4 +1,4 @@
-Options:Default "trace"
+--Options:Default "trace"
 
 local Sources = Dependencies(CurrentDirectory .. '/src')
 Sources:Main "aeslua.lua"
@@ -46,7 +46,7 @@ Tasks:Task "test"(function()
 		end
 	end
 
-	assert(loadfile("src/test/_runTests.lua")(unpack(arguments)), "Not all tests passed")
+	assert(loadfile(File "src/test/_runTests.lua")(unpack(arguments)), "Not all tests passed")
 end)
 	:Requires "build/aeslua.lua"
 	:Description "Run tests"
