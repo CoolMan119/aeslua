@@ -167,6 +167,30 @@ local function sleepCheckIn()
     end
 end
 
+local function getRandomData(bytes)
+	local char, random, sleep, insert = string.char, math.random, sleepCheckIn, table.insert
+	local result = {}
+
+	for i=1,bytes do
+		insert(result, random(0,255))
+		if i % 10240 == 0 then sleep() end
+	end
+
+	return result
+end
+
+local function getRandomString(bytes)
+	local char, random, sleep, insert = string.char, math.random, sleepCheckIn, table.insert
+	local result = {}
+
+	for i=1,bytes do
+		insert(result, char(random(0,255)))
+		if i % 10240 == 0 then sleep() end
+	end
+
+	return table.concat(result)
+end
+
 return {
 	byteParity = byteParity,
 	getByte = getByte,
@@ -181,4 +205,7 @@ return {
 	xorIV = xorIV,
 
 	sleepCheckIn = sleepCheckIn,
+
+	getRandomData = getRandomData,
+	getRandomString = getRandomString,
 }

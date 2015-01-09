@@ -1,4 +1,4 @@
---Options:Default "trace"
+Options:Default "trace"
 
 local Sources = Dependencies(CurrentDirectory .. '/src')
 Sources:Main "aeslua.lua"
@@ -36,18 +36,14 @@ Tasks:Clean("clean", "build")
 Tasks:Combine("combine", Sources, "build/aeslua.lua", {"clean"})
 Tasks:Minify("minify", "build/aeslua.lua", "build/aeslua.min.lua")
 
-Tasks:Task "test"(function()
-	local tests = Options:Get("tests")
-	local arguments = {}
-
-	if tests then
-		for test in tests:gmatch("[^,;]+") do
-			table.insert(arguments, test)
-		end
-	end
-
-	assert(loadfile(File "src/test/_runTests.lua")(unpack(arguments)), "Not all tests passed")
-end)
+Tasks:Busted("test", {
+	['exclude-tags'] = {'large'},
+	env = {
+		File = File,
+		Verbose = Verbose,
+		Log = Log,
+	}
+})
 	:Requires "build/aeslua.lua"
 	:Description "Run tests"
 
