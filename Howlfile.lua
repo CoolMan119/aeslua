@@ -1,6 +1,6 @@
 Options:Default "trace"
 
-local Sources = Dependencies(CurrentDirectory .. '/src')
+local Sources = Dependencies(CurrentDirectory)
 Sources:Main "aeslua.lua"
 	:Depends "ciphermode"
 	:Depends "util"
