@@ -9,8 +9,8 @@ describe("Tests ciphers", function()
 		util = aeslua.util
 	end)
 
-	describe("Test vectors", function()
-		describe("Key expansions", function()
+	describe("Test #vectors", function()
+		describe("Key #expansions", function()
 			local function testKeys(key, enc, dec)
 				local ecs
 				if enc then
@@ -66,7 +66,7 @@ describe("Tests ciphers", function()
 			end)
 		end)
 
-		describe("Encryption", function()
+		describe("#encryption", function()
 			local plainText =  { 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff }
 
 			local function testEncryption(key, result)
@@ -98,11 +98,11 @@ describe("Tests ciphers", function()
 		end)
 	end)
 
-	it("10 random en-/decryptions", function()
+	it("100 random en-/decryptions", function()
 		math.randomseed(os.time())
 		local getRandom = util.getRandomData
 
-		for x=1, 10 do
+		for x=1, 100 do
 			local key = getRandom(16)
 			local plaintext = getRandom(16)
 
