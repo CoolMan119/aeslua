@@ -9,8 +9,8 @@ Sources:File "lib/aes.lua"
 	:Depends "gf"
 	:Depends "util"
 
-Sources:File "lib/bit.lua"    :Name "bit"
-Sources:File "lib/buffer.lua" :Name "buffer"
+Sources:File "lib/bit.lua"    :Name "bit"    :Export(false)
+Sources:File "lib/buffer.lua" :Name "buffer" :Export(false)
 
 Sources:File "lib/ciphermode.lua"
 	:Name "ciphermode"
@@ -18,10 +18,10 @@ Sources:File "lib/ciphermode.lua"
 	:Depends "buffer"
 	:Depends "util"
 
-
 Sources:File "lib/gf.lua"
 	:Name "gf"
 	:Depends "bit"
+	:Export(false)
 
 Sources:File "lib/util.lua"
 	:Name "util"

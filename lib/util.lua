@@ -44,10 +44,11 @@ end
 local function bytesToInts(bytes, start, n)
 	local ints = {}
 	for i = 0, n - 1 do
-		ints[i] = putByte(bytes[start + (i*4)    ], 3)
-				+ putByte(bytes[start + (i*4) + 1], 2)
-				+ putByte(bytes[start + (i*4) + 2], 1)
-				+ putByte(bytes[start + (i*4) + 3], 0)
+		ints[i + 1] =
+				putByte(bytes[start + (i*4)], 3) +
+				putByte(bytes[start + (i*4) + 1], 2) +
+				putByte(bytes[start + (i*4) + 2], 1) +
+				putByte(bytes[start + (i*4) + 3], 0)
 
 		if n % 10000 == 0 then sleepCheckIn() end
 	end
@@ -59,9 +60,9 @@ end
 --
 local function intsToBytes(ints, output, outputOffset, n)
 	n = n or #ints
-	for i = 0, n do
+	for i = 0, n - 1 do
 		for j = 0,3 do
-			output[outputOffset + i*4 + (3 - j)] = getByte(ints[i], j)
+			output[outputOffset + i*4 + (3 - j)] = getByte(ints[i + 1], j)
 		end
 
 		if n % 10000 == 0 then sleepCheckIn() end

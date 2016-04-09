@@ -10,7 +10,10 @@ describe('Tests encryption of large strings #performance #large', function()
 		local key = aeslua.util.getRandomString(128)
 		local plaintext = aeslua.util.getRandomString(n * 1024)
 
+		local start = os.clock()
 		aeslua.encrypt(key, plaintext)
+		local time = os.clock() - start
+		print(("%s in %s seconds: %skb/s"):format(n, time, n / time))
 	end
 
 	it('100kb', function()

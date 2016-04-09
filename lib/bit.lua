@@ -7,19 +7,6 @@
 
 local floor = math.floor
 
-local bit_band, bit_bxor = bit.band, bit.bxor
-local function band(a, b)
-	if a > 2147483647 then a = a - 4294967296 end
-	if b > 2147483647 then b = b - 4294967296 end
-	return bit_band(a, b)
-end
-
-local function bxor(a, b)
-	if a > 2147483647 then a = a - 4294967296 end
-	if b > 2147483647 then b = b - 4294967296 end
-	return bit_bxor(a, b)
-end
-
 local lshift, rshift
 
 rshift = function(a,disp)
@@ -33,9 +20,9 @@ end
 return {
 	-- bit operations
 	bnot = bit.bnot,
-	band = band,
+	band = bit.band,
 	bor  = bit.bor,
-	bxor = bxor,
+	bxor = bit.bxor,
 	rshift = rshift,
 	lshift = lshift,
 }

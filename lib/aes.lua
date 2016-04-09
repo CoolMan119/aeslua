@@ -285,7 +285,7 @@ end
 --
 local function addRoundKey(state, key, round)
 	for i = 0, 3 do
-		state[i] = bit.bxor(state[i], key[round*4+i])
+		state[i + 1] = bit.bxor(state[i + 1], key[round*4+i])
 	end
 end
 
@@ -293,108 +293,108 @@ end
 -- do encryption round (ShiftRow, SubBytes, MixColumn together)
 --
 local function doRound(origState, dstState)
-	dstState[0] =  bit.bxor(bit.bxor(bit.bxor(
-				table0[getByte(origState[0],3)],
-				table1[getByte(origState[1],2)]),
-				table2[getByte(origState[2],1)]),
-				table3[getByte(origState[3],0)])
-
 	dstState[1] =  bit.bxor(bit.bxor(bit.bxor(
 				table0[getByte(origState[1],3)],
 				table1[getByte(origState[2],2)]),
 				table2[getByte(origState[3],1)]),
-				table3[getByte(origState[0],0)])
+				table3[getByte(origState[4],0)])
 
 	dstState[2] =  bit.bxor(bit.bxor(bit.bxor(
 				table0[getByte(origState[2],3)],
 				table1[getByte(origState[3],2)]),
-				table2[getByte(origState[0],1)]),
+				table2[getByte(origState[4],1)]),
 				table3[getByte(origState[1],0)])
 
 	dstState[3] =  bit.bxor(bit.bxor(bit.bxor(
 				table0[getByte(origState[3],3)],
-				table1[getByte(origState[0],2)]),
+				table1[getByte(origState[4],2)]),
 				table2[getByte(origState[1],1)]),
 				table3[getByte(origState[2],0)])
+
+	dstState[4] =  bit.bxor(bit.bxor(bit.bxor(
+				table0[getByte(origState[4],3)],
+				table1[getByte(origState[1],2)]),
+				table2[getByte(origState[2],1)]),
+				table3[getByte(origState[3],0)])
 end
 
 --
 -- do last encryption round (ShiftRow and SubBytes)
 --
 local function doLastRound(origState, dstState)
-	dstState[0] = putByte(SBox[getByte(origState[0],3)], 3)
-				+ putByte(SBox[getByte(origState[1],2)], 2)
-				+ putByte(SBox[getByte(origState[2],1)], 1)
-				+ putByte(SBox[getByte(origState[3],0)], 0)
-
 	dstState[1] = putByte(SBox[getByte(origState[1],3)], 3)
 				+ putByte(SBox[getByte(origState[2],2)], 2)
 				+ putByte(SBox[getByte(origState[3],1)], 1)
-				+ putByte(SBox[getByte(origState[0],0)], 0)
+				+ putByte(SBox[getByte(origState[4],0)], 0)
 
 	dstState[2] = putByte(SBox[getByte(origState[2],3)], 3)
 				+ putByte(SBox[getByte(origState[3],2)], 2)
-				+ putByte(SBox[getByte(origState[0],1)], 1)
+				+ putByte(SBox[getByte(origState[4],1)], 1)
 				+ putByte(SBox[getByte(origState[1],0)], 0)
 
 	dstState[3] = putByte(SBox[getByte(origState[3],3)], 3)
-				+ putByte(SBox[getByte(origState[0],2)], 2)
+				+ putByte(SBox[getByte(origState[4],2)], 2)
 				+ putByte(SBox[getByte(origState[1],1)], 1)
 				+ putByte(SBox[getByte(origState[2],0)], 0)
+
+	dstState[4] = putByte(SBox[getByte(origState[4],3)], 3)
+				+ putByte(SBox[getByte(origState[1],2)], 2)
+				+ putByte(SBox[getByte(origState[2],1)], 1)
+				+ putByte(SBox[getByte(origState[3],0)], 0)
 end
 
 --
 -- do decryption round
 --
 local function doInvRound(origState, dstState)
-	dstState[0] =  bit.bxor(bit.bxor(bit.bxor(
-				tableInv0[getByte(origState[0],3)],
-				tableInv1[getByte(origState[3],2)]),
-				tableInv2[getByte(origState[2],1)]),
-				tableInv3[getByte(origState[1],0)])
-
 	dstState[1] =  bit.bxor(bit.bxor(bit.bxor(
 				tableInv0[getByte(origState[1],3)],
-				tableInv1[getByte(origState[0],2)]),
+				tableInv1[getByte(origState[4],2)]),
 				tableInv2[getByte(origState[3],1)]),
 				tableInv3[getByte(origState[2],0)])
 
 	dstState[2] =  bit.bxor(bit.bxor(bit.bxor(
 				tableInv0[getByte(origState[2],3)],
 				tableInv1[getByte(origState[1],2)]),
-				tableInv2[getByte(origState[0],1)]),
+				tableInv2[getByte(origState[4],1)]),
 				tableInv3[getByte(origState[3],0)])
 
 	dstState[3] =  bit.bxor(bit.bxor(bit.bxor(
 				tableInv0[getByte(origState[3],3)],
 				tableInv1[getByte(origState[2],2)]),
 				tableInv2[getByte(origState[1],1)]),
-				tableInv3[getByte(origState[0],0)])
+				tableInv3[getByte(origState[4],0)])
+
+	dstState[4] =  bit.bxor(bit.bxor(bit.bxor(
+				tableInv0[getByte(origState[4],3)],
+				tableInv1[getByte(origState[3],2)]),
+				tableInv2[getByte(origState[2],1)]),
+				tableInv3[getByte(origState[1],0)])
 end
 
 --
 -- do last decryption round
 --
 local function doInvLastRound(origState, dstState)
-	dstState[0] = putByte(iSBox[getByte(origState[0],3)], 3)
-				+ putByte(iSBox[getByte(origState[3],2)], 2)
-				+ putByte(iSBox[getByte(origState[2],1)], 1)
-				+ putByte(iSBox[getByte(origState[1],0)], 0)
-
 	dstState[1] = putByte(iSBox[getByte(origState[1],3)], 3)
-				+ putByte(iSBox[getByte(origState[0],2)], 2)
+				+ putByte(iSBox[getByte(origState[4],2)], 2)
 				+ putByte(iSBox[getByte(origState[3],1)], 1)
 				+ putByte(iSBox[getByte(origState[2],0)], 0)
 
 	dstState[2] = putByte(iSBox[getByte(origState[2],3)], 3)
 				+ putByte(iSBox[getByte(origState[1],2)], 2)
-				+ putByte(iSBox[getByte(origState[0],1)], 1)
+				+ putByte(iSBox[getByte(origState[4],1)], 1)
 				+ putByte(iSBox[getByte(origState[3],0)], 0)
 
 	dstState[3] = putByte(iSBox[getByte(origState[3],3)], 3)
 				+ putByte(iSBox[getByte(origState[2],2)], 2)
 				+ putByte(iSBox[getByte(origState[1],1)], 1)
-				+ putByte(iSBox[getByte(origState[0],0)], 0)
+				+ putByte(iSBox[getByte(origState[4],0)], 0)
+
+	dstState[4] = putByte(iSBox[getByte(origState[4],3)], 3)
+				+ putByte(iSBox[getByte(origState[3],2)], 2)
+				+ putByte(iSBox[getByte(origState[2],1)], 1)
+				+ putByte(iSBox[getByte(origState[1],0)], 0)
 end
 
 --
