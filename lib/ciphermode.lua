@@ -6,8 +6,10 @@ local public = {}
 -- string - string to encrypt
 -- modefunction - function for cipher mode to use
 --
-function public.encryptString(key, data, modeFunction)
-	local iv = iv or {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
+
+local random = math.random
+function public.encryptString(key, data, modeFunction, iv)
+	iv = iv or {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
 	local keySched = aes.expandEncryptionKey(key)
 	local encryptedData = buffer.new()
 
@@ -66,8 +68,8 @@ end
 -- string - string to decrypt
 -- modefunction - function for cipher mode to use
 --
-function public.decryptString(key, data, modeFunction)
-	local iv = iv or {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
+function public.decryptString(key, data, modeFunction, iv)
+	iv = iv or {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
 
 	local keySched
 	if (modeFunction == public.decryptOFB or modeFunction == public.decryptCFB) then

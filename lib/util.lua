@@ -83,6 +83,15 @@ local function bytesToHex(bytes)
 	return hexBytes
 end
 
+local function hexToBytes(bytes)
+	local out = {}
+	for i = 1, #bytes, 2 do
+		out[#out + 1] = tonumber(bytes:sub(i, i + 1), 16)
+	end
+
+	return out
+end
+
 --
 -- convert data to hex string
 --
@@ -108,13 +117,14 @@ local function padByteString(data)
 	local random2 = math.random(0,255)
 
 	local prefix = string.char(random1,
-							   random2,
-							   random1,
-							   random2,
-							   getByte(dataLength, 3),
-							   getByte(dataLength, 2),
-							   getByte(dataLength, 1),
-							   getByte(dataLength, 0))
+		random2,
+		random1,
+		random2,
+		getByte(dataLength, 3),
+		getByte(dataLength, 2),
+		getByte(dataLength, 1),
+		getByte(dataLength, 0)
+	)
 
 	data = prefix .. data
 
@@ -199,6 +209,7 @@ return {
 	bytesToInts = bytesToInts,
 	intsToBytes = intsToBytes,
 	bytesToHex = bytesToHex,
+	hexToBytes = hexToBytes,
 	toHexString = toHexString,
 	padByteString = padByteString,
 	properlyDecrypted = properlyDecrypted,

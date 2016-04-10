@@ -1,4 +1,2 @@
-src/aeslua
 build/
-*.tsv
-*.min
+errors.txt

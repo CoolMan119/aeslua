@@ -174,7 +174,7 @@ local function expandEncryptionKey(key)
 
 
 	if ((keyWords ~= 4 and keyWords ~= 6 and keyWords ~= 8) or (keyWords * 4 ~= #key)) then
-		print("Invalid key size: ", keyWords)
+		error("Invalid key size: " .. tostring(keyWords))
 		return nil
 	end
 
@@ -415,7 +415,7 @@ local function encrypt(key, input, inputOffset, output, outputOffset)
 	local tmpState = {}
 
 	if (key[KEY_TYPE] ~= ENCRYPTION_KEY) then
-		print("No encryption key: ", key[KEY_TYPE])
+		error("No encryption key: " .. tostring(key[KEY_TYPE]) .. ", expected " .. ENCRYPTION_KEY)
 		return
 	end
 
@@ -466,7 +466,7 @@ local function decrypt(key, input, inputOffset, output, outputOffset)
 	local tmpState = {}
 
 	if (key[KEY_TYPE] ~= DECRYPTION_KEY) then
-		print("No decryption key: ", key[KEY_TYPE])
+		error("No decryption key: " .. tostring(key[KEY_TYPE]))
 		return
 	end
 
