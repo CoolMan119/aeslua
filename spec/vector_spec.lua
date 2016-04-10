@@ -1,5 +1,5 @@
 -- http://www.inconteam.com/software-development/41-encryption/55-aes-test-vectors
-if not File then File = shell.resolve end
+
 describe("Test #vectors", function()
 	local aeslua, aes, ciphermode, util
 
@@ -18,6 +18,9 @@ describe("Test #vectors", function()
 
 	local function generate(mode, length, key, data)
 		describe("#" .. mode, function()
+			local encrypt = assert(ciphermode["encrypt" .. mode], "No encryption mode: " .. mode)
+			local decrypt = assert(ciphermode["decrypt" .. mode], "No decryption mode: " .. mode)
+
 			describe("#" .. length, function()
 				key = util.hexToBytes(key)
 
@@ -28,20 +31,16 @@ describe("Test #vectors", function()
 
 					describe(row[2], function()
 						it("#encrypt", function()
-							local func = assert(ciphermode["encrypt" .. mode], "No mode: " .. mode)
-							local result = ciphermode.encryptString(key, plain, func, iv)
+							local result = ciphermode.encryptString(key, plain, encrypt, iv)
 							assert.are.same(#cipher, #result)
 							assert.are.same(encode(cipher), encode(result))
 						end)
 
-						--[[
 						it("#decrypt", function()
-							local func = assert(ciphermode["decrypt" .. mode], "No mode: " .. mode)
-							local result = ciphermode.decryptString(key, cipher, func, iv)
+							local result = ciphermode.decryptString(key, cipher, decrypt, iv)
 							assert.are.same(#plain, #result)
 							assert.are.same(encode(plain), encode(result))
 						end)
-						--]]
 					end)
 				end
 			end)

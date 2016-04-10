@@ -166,7 +166,7 @@ local function xorIV(data, iv)
 	end
 end
 
--- Called every
+-- Called every encryption cycle
 local push, pull, time = os.queueEvent, coroutine.yield, os.time
 local oldTime = time()
 local function sleepCheckIn()
