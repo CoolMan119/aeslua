@@ -9,7 +9,7 @@ CBCMODE = 2
 OFBMODE = 3
 CFBMODE = 4
 
-local function pwToKey(password, keyLength)
+local function pwToKey(password, keyLength, iv)
 	local padLength = keyLength
 	if (keyLength == AES192) then
 		padLength = 32
@@ -26,7 +26,7 @@ local function pwToKey(password, keyLength)
 	end
 
 	local pwBytes = {string.byte(password,1,#password)}
-	password = ciphermode.encryptString(pwBytes, password, ciphermode.encryptCBC)
+	password = ciphermode.encryptString(pwBytes, password, ciphermode.encryptCBC, iv)
 
 	password = string.sub(password, 1, keyLength)
 
@@ -42,25 +42,25 @@ end
 --
 -- mode and keyLength must be the same for encryption and decryption.
 --
-function encrypt(password, data, keyLength, mode)
+function encrypt(password, data, keyLength, mode, iv)
 	assert(password ~= nil, "Empty password.")
 	assert(password ~= nil, "Empty data.")
 
 	local mode = mode or CBCMODE
 	local keyLength = keyLength or AES128
 
-	local key = pwToKey(password, keyLength)
+	local key = pwToKey(password, keyLength, iv)
 
 	local paddedData = util.padByteString(data)
 
 	if (mode == ECBMODE) then
-		return ciphermode.encryptString(key, paddedData, ciphermode.encryptECB)
+		return ciphermode.encryptString(key, paddedData, ciphermode.encryptECB, iv)
 	elseif (mode == CBCMODE) then
-		return ciphermode.encryptString(key, paddedData, ciphermode.encryptCBC)
+		return ciphermode.encryptString(key, paddedData, ciphermode.encryptCBC, iv)
 	elseif (mode == OFBMODE) then
-		return ciphermode.encryptString(key, paddedData, ciphermode.encryptOFB)
+		return ciphermode.encryptString(key, paddedData, ciphermode.encryptOFB, iv)
 	elseif (mode == CFBMODE) then
-		return ciphermode.encryptString(key, paddedData, ciphermode.encryptCFB)
+		return ciphermode.encryptString(key, paddedData, ciphermode.encryptCFB, iv)
 	else
 		return nil
 	end
@@ -78,21 +78,21 @@ end
 --
 -- mode and keyLength must be the same for encryption and decryption.
 --
-function decrypt(password, data, keyLength, mode)
+function decrypt(password, data, keyLength, mode, iv)
 	local mode = mode or CBCMODE
 	local keyLength = keyLength or AES128
 
-	local key = pwToKey(password, keyLength)
+	local key = pwToKey(password, keyLength, iv)
 
 	local plain
 	if (mode == ECBMODE) then
-		plain = ciphermode.decryptString(key, data, ciphermode.decryptECB)
+		plain = ciphermode.decryptString(key, data, ciphermode.decryptECB, iv)
 	elseif (mode == CBCMODE) then
-		plain = ciphermode.decryptString(key, data, ciphermode.decryptCBC)
+		plain = ciphermode.decryptString(key, data, ciphermode.decryptCBC, iv)
 	elseif (mode == OFBMODE) then
-		plain = ciphermode.decryptString(key, data, ciphermode.decryptOFB)
+		plain = ciphermode.decryptString(key, data, ciphermode.decryptOFB, iv)
 	elseif (mode == CFBMODE) then
-		plain = ciphermode.decryptString(key, data, ciphermode.decryptCFB)
+		plain = ciphermode.decryptString(key, data, ciphermode.decryptCFB, iv)
 	end
 
 	result = util.unpadByteString(plain)
