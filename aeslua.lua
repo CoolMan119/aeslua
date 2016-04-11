@@ -8,6 +8,7 @@ ECBMODE = 1
 CBCMODE = 2
 OFBMODE = 3
 CFBMODE = 4
+CTRMODE = 4
 
 local function pwToKey(password, keyLength, iv)
 	local padLength = keyLength
@@ -53,16 +54,18 @@ function encrypt(password, data, keyLength, mode, iv)
 
 	local paddedData = util.padByteString(data)
 
-	if (mode == ECBMODE) then
+	if mode == ECBMODE then
 		return ciphermode.encryptString(key, paddedData, ciphermode.encryptECB, iv)
-	elseif (mode == CBCMODE) then
+	elseif mode == CBCMODE then
 		return ciphermode.encryptString(key, paddedData, ciphermode.encryptCBC, iv)
-	elseif (mode == OFBMODE) then
+	elseif mode == OFBMODE then
 		return ciphermode.encryptString(key, paddedData, ciphermode.encryptOFB, iv)
-	elseif (mode == CFBMODE) then
+	elseif mode == CFBMODE then
 		return ciphermode.encryptString(key, paddedData, ciphermode.encryptCFB, iv)
+	elseif mode == CTRMODE then
+		return ciphermode.encryptString(key, paddedData, ciphermode.encryptCTR, iv)
 	else
-		return nil
+		error("Unknown mode", 2)
 	end
 end
 
@@ -85,14 +88,18 @@ function decrypt(password, data, keyLength, mode, iv)
 	local key = pwToKey(password, keyLength, iv)
 
 	local plain
-	if (mode == ECBMODE) then
+	if mode == ECBMODE then
 		plain = ciphermode.decryptString(key, data, ciphermode.decryptECB, iv)
-	elseif (mode == CBCMODE) then
+	elseif mode == CBCMODE then
 		plain = ciphermode.decryptString(key, data, ciphermode.decryptCBC, iv)
-	elseif (mode == OFBMODE) then
+	elseif mode == OFBMODE then
 		plain = ciphermode.decryptString(key, data, ciphermode.decryptOFB, iv)
-	elseif (mode == CFBMODE) then
+	elseif mode == CFBMODE then
 		plain = ciphermode.decryptString(key, data, ciphermode.decryptCFB, iv)
+	elseif mode == CTRMODE then
+		plain = ciphermode.decryptString(key, data, ciphermode.decryptCTR, iv)
+	else
+		error("Unknown mode", 2)
 	end
 
 	result = util.unpadByteString(plain)

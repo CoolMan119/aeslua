@@ -23,11 +23,15 @@ describe("Test #vectors", function()
 
 			describe("#" .. length, function()
 				key = util.hexToBytes(key)
+				if #key ~= length / 8 then error("Incorect length: key is " .. #key .. ", length is " .. (length / 8)) end
 
-				for _, row in ipairs(data) do
+				for i, row in ipairs(data) do
 					local iv = row[1] and util.hexToBytes(row[1])
 					local plain = decode(row[2])
 					local cipher = decode(row[3])
+
+					-- Each row's IV is incremented by 1
+					if mode == "CTR" then for _ = 1, i - 1 do util.increment(iv) end end
 
 					describe(row[2], function()
 						it("#encrypt", function()
@@ -129,5 +133,26 @@ describe("Test #vectors", function()
 		{ "B7BF3A5DF43989DD97F0FA97EBCE2F4A", "ae2d8a571e03ac9c9eb76fac45af8e51", "4febdc6740d20b3ac88f6ad82a4fb08d" },
 		{ "E1C656305ED1A7A6563805746FE03EDC", "30c81c46a35ce411e5fbc1191a0a52ef", "71ab47a086e86eedf39d1c5bba97c408" },
 		{ "41635BE625B48AFC1666DD42A09D96E7", "f69f2445df4f9b17ad2b417be66c3710", "0126141d67f37be8538f5a8be740e484" },
+	})
+
+	generate("CTR", "128", "2b7e151628aed2a6abf7158809cf4f3c", {
+		{ "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff", "6bc1bee22e409f96e93d7e117393172a", "874d6191b620e3261bef6864990db6ce", },
+		{ "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff", "ae2d8a571e03ac9c9eb76fac45af8e51", "9806f66b7970fdff8617187bb9fffdff" },
+		{ "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff", "30c81c46a35ce411e5fbc1191a0a52ef", "5ae4df3edbd5d35e5b4f09020db03eab" },
+		{ "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff", "f69f2445df4f9b17ad2b417be66c3710", "1e031dda2fbe03d1792170a0f3009cee" },
+	})
+
+	generate("CTR", "192", "8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b", {
+		{ "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff", "6bc1bee22e409f96e93d7e117393172a", "1abc932417521ca24f2b0459fe7e6e0b" },
+		{ "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff", "ae2d8a571e03ac9c9eb76fac45af8e51", "090339ec0aa6faefd5ccc2c6f4ce8e94" },
+		{ "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff", "30c81c46a35ce411e5fbc1191a0a52ef", "1e36b26bd1ebc670d1bd1d665620abf7" },
+		{ "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff", "f69f2445df4f9b17ad2b417be66c3710", "4f78a7f6d29809585a97daec58c6b050" },
+	})
+
+	generate("CTR", "256", "603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4", {
+		{ "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff", "6bc1bee22e409f96e93d7e117393172a", "601ec313775789a5b7a7f504bbf3d228" },
+		{ "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff", "ae2d8a571e03ac9c9eb76fac45af8e51", "f443e3ca4d62b59aca84e990cacaf5c5" },
+		{ "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff", "30c81c46a35ce411e5fbc1191a0a52ef", "2b0930daa23de94ce87017ba2d84988d" },
+		{ "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff", "f69f2445df4f9b17ad2b417be66c3710", "dfc9c58db67aada613c2dd08457941a6" },
 	})
 end)

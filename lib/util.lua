@@ -166,6 +166,20 @@ local function xorIV(data, iv)
 	end
 end
 
+local function increment(data)
+	local i = 16
+	while true do
+		local value = data[i] + 1
+		if value >= 256 then
+			data[i] = value - 256
+			i = (i - 2) % 16 + 1
+		else
+			data[i] = value
+			break
+		end
+	end
+end
+
 -- Called every encryption cycle
 local push, pull, time = os.queueEvent, coroutine.yield, os.time
 local oldTime = time()
@@ -215,6 +229,7 @@ return {
 	properlyDecrypted = properlyDecrypted,
 	unpadByteString = unpadByteString,
 	xorIV = xorIV,
+	increment = increment,
 
 	sleepCheckIn = sleepCheckIn,
 

@@ -14,7 +14,7 @@ describe('Check all cipher types', function()
 		math.randomseed(os.time())
 	end)
 
-	for _, modeName in ipairs({"ECB", "CBC", "OFB", "CFB"}) do
+	for _, modeName in ipairs({"ECB", "CBC", "OFB", "CFB", "CTR"}) do
 		local mode = aeslua[modeName .. "MODE"]
 		for _, keyLengthName in ipairs({"128", "192", "256"}) do
 			local iv = {}

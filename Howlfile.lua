@@ -47,3 +47,12 @@ Tasks:Busted("test", {
 
 Tasks:Task "build"{"minify", "test"}
 	:Description "Minify and test"
+
+
+Tasks:gist "upload" (function(spec)
+	spec:summary "Pure Lua AES encryption (https://github.com/SquidDev-CC/aeslua)"
+	spec:gist "86925e07cbabd70773e53d781bd8b2fe"
+	spec:from "build" {
+		include = { "aeslua.lua", "aeslua.min.lua" }
+	}
+end) :Requires { "build/aeslua.lua", "build/aeslua.min.lua" }

@@ -63,6 +63,18 @@ function public.encryptCFB(keySched, byteData, iv)
 	return byteData
 end
 
+function public.encryptCTR(keySched, byteData, iv)
+	local nextIV = {}
+	for j = 1, 16 do nextIV[j] = iv[j] end
+
+	aes.encrypt(keySched, iv, 1, iv, 1)
+	util.xorIV(byteData, iv)
+
+	util.increment(nextIV)
+
+	return nextIV
+end
+
 --
 -- Decrypt strings
 -- key - byte array with key
@@ -79,7 +91,7 @@ function public.decryptString(key, data, modeFunction, iv)
 	end
 
 	local keySched
-	if (modeFunction == public.decryptOFB or modeFunction == public.decryptCFB) then
+	if modeFunction == public.decryptOFB or modeFunction == public.decryptCFB or modeFunction == public.decryptCTR then
 		keySched = aes.expandEncryptionKey(key)
 	else
 		keySched = aes.expandDecryptionKey(key)
@@ -139,5 +151,7 @@ function public.decryptCFB(keySched, byteData, iv)
 
 	return nextIV
 end
+
+public.decryptCTR = public.encryptCTR
 
 return public
