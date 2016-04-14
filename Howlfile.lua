@@ -47,7 +47,7 @@ Tasks:Busted("test", {
 
 Tasks:Task "build"{"minify", "test"}
 	:Description "Minify and test"
-
+Tasks:Default "build"
 
 Tasks:gist "upload" (function(spec)
 	spec:summary "Pure Lua AES encryption (https://github.com/SquidDev-CC/aeslua)"

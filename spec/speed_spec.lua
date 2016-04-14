@@ -3,7 +3,7 @@ describe('Performance checker for AES #performance', function()
 
 	setup(function()
 		aeslua = setmetatable({}, { __index = getfenv() })
-		setfenv(loadfile(File "build/aeslua.lua"), aeslua)()
+		loadfile(File "build/aeslua.lua", aeslua)()
 		verbose = (Utils and Utils.Verbose) or Verbose or print
 	end)
 

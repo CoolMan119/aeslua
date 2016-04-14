@@ -3,7 +3,7 @@ describe("Tests ciphers", function()
 
 	setup(function()
 		aeslua = setmetatable({}, { __index = getfenv() })
-		setfenv(loadfile(File "build/aeslua.lua"), aeslua)()
+		loadfile(File "build/aeslua.lua", aeslua)()
 
 		aes = aeslua.aes
 		util = aeslua.util

@@ -6,7 +6,7 @@ describe("Test #vectors", function()
 	setup(function()
 		aeslua = setmetatable({}, { __index = getfenv() })
 		aeslua._ENV = aeslua
-		setfenv(loadfile(File "build/aeslua.lua"), aeslua)()
+		loadfile(File "build/aeslua.lua", aeslua)()
 
 		aes = aeslua.aes
 		ciphermode = aeslua.ciphermode

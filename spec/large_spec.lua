@@ -3,7 +3,7 @@ describe('Tests encryption of large strings #performance #large', function()
 
 	setup(function()
 		aeslua = setmetatable({}, { __index = getfenv() })
-		setfenv(loadfile(File "build/aeslua.lua"), aeslua)()
+		loadfile(File "build/aeslua.lua", aeslua)()
 	end)
 
 	local function large(n)
